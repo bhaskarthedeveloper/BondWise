@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BondWise – Relationship &amp; Marriage Awareness Survey</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">BondWise</div>
+    <div class="title">Relationship &amp; Marriage Awareness Survey</div>
+    <div class="conf">Your answers are confidential.</div>
+  </header>
+
+  <!-- Intro -->
+  <section id="intro" class="screen">
+    <h1>Understanding how today's generation thinks about relationships, intimacy, friendship and marriage.</h1>
+    <p>We want to understand how today's college students view relationships, friendship, intimacy and marriage.</p>
+    <p>There are no right or wrong answers. We are interested in your genuine opinions, not answers that you think others expect from you.</p>
+    <p>Please express your views openly. You may skip any question you do not wish to answer.</p>
+    <p><strong>Estimated time: 6–8 minutes</strong></p>
+    <div class="card">Your responses will be used to understand students' perspectives on relationships, friendship and marriage, and to contact you regarding the BondWise online meeting. Your email address will be used for meeting-related communication. Please avoid including names or identifying details of other people in your answers.</div>
+    <button id="startBtn" class="primary">Start the survey</button>
+  </section>
+
+  <!-- Chat -->
+  <div id="chatWrap" class="hidden" style="display:contents">
+    <div class="progress">
+      <span id="progressText" aria-live="polite"></span>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i id="progressBar"></i></div>
+    </div>
+    <main id="chat" aria-live="polite"></main>
+    <div id="panel" class="panel"></div>
+  </div>
+
+  <!-- Review -->
+  <section id="review" class="screen hidden"></section>
+
+  <!-- Done -->
+  <section id="done" class="screen hidden">
+    <h1>Thank you for completing the BondWise survey!</h1>
+    <p>Your responses have been submitted successfully.</p>
+    <p><strong>Your unique registration ID:</strong></p>
+    <div class="rid" id="rid"></div>
+    <button id="copyBtn" class="primary">Copy Registration ID</button>
+    <p id="copyMsg" class="note" aria-live="polite"></p>
+    <p>Please keep this ID for your reference. We will contact you through the email address you provided regarding the upcoming BondWise online meeting and Zoom link.</p>
+    <p class="note">Thank you for sharing your views. Your honest responses will help us understand how today's generation thinks about relationships and what kind of support or opportunities may be valuable to them.</p>
+  </section>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
