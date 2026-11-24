@@ -41,6 +41,8 @@ const STEPS = [
   {id:'gender', sec:P, type:'choice', req:true, opts:['Male','Female'], q:'Gender'},
   {id:'email', sec:P, type:'email', req:true, q:'Email Address',
     hint:'We will use this email address to contact you regarding the upcoming myClub online meeting and share the Zoom meeting link.'},
+  {id:'phone', sec:P, type:'phone', req:true, q:'Phone Number (10-digit mobile number)',
+    hint:'Enter your 10-digit mobile number without +91 or spaces.'},
   {id:'q1', sec:R, type:'long', q:'Why do you think young women and men enter boyfriend-girlfriend relationships nowadays? Do you think this culture is justified? Why or why not?',
     hint:'You may consider possible reasons such as companionship, physical needs, emotional support, physical interaction or the possibility of marriage.'},
   {id:'q2', sec:R, type:'long', q:'Nowadays, discussions and reports about premarital sexual relationships seem to be increasing. Do you agree with this observation? Do you think premarital sex between consenting adults is natural, acceptable or wrong? Why?'},
@@ -105,6 +107,7 @@ const h = (tag, attrs = {}, ...kids) => {
   return e;
 };
 const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const PHONE_RE = /^\d{10}$/;
 const SHORT_TEXT_RE = /^[a-zA-Z0-9\s.,&'()/-]+$/;
 const LONG_TEXT_RE = /^[a-zA-Z0-9\s.,!?;:'"()&%/@\n\r-]+$/;
 const yearsFor = cat => YEARS[cat] || YEARS.Other;
@@ -124,6 +127,20 @@ function isDone(step) { return state.skipped[step.id] || display(step) !== null;
 /* ========== 5. Input builders ========== */
 function buildInput(step) {
   const cur = state.answers[step.id];
+  if (step.type === 'phone') {
+    const i = h('input', {
+      type: 'text',
+      inputmode: 'numeric',
+      pattern: '[0-9]*',
+      maxlength: 10,
+      value: cur || '',
+      autocomplete: 'tel-national',
+      placeholder: 'e.g. 9876543210',
+      'aria-label': step.q,
+      oninput: () => { i.value = i.value.replace(/\D/g, '').slice(0, 10); }
+    });
+    return {el: i, read: () => i.value.trim(), focus: () => i.focus()};
+  }
   if (step.type === 'text' || step.type === 'email') {
     const i = h('input', {type: step.type === 'email' ? 'email' : 'text', maxlength: 200, value: cur || '',
       autocomplete: step.type === 'email' ? 'email' : 'off', 'aria-label': step.q});
@@ -250,6 +267,10 @@ function save(step, v) {
     if (!v) return 'This field is required.';
     if (!EMAIL_RE.test(v)) return 'Please enter a valid email address.';
     a[id] = v;
+  } else if (step.type === 'phone') {
+    if (!v) return 'This field is required.';
+    if (!PHONE_RE.test(v)) return 'Please enter a valid 10-digit phone number (numbers only).';
+    a[id] = v;
   } else if (step.type === 'text') {
     if (!v) return 'This field is required.';
     if (v.length < 2) return 'Please enter a valid name.';
@@ -325,7 +346,7 @@ function buildPayload() {
   return {
     submissionToken: state.token,
     college: a.college, category: a.category, categoryOther: a.categoryOther || '',
-    year: a.year, gender: a.gender, email: a.email,
+    year: a.year, gender: a.gender, email: a.email, phone: a.phone,
     q1: text('q1'), q2: text('q2'), q3: text('q3'), q4: text('q4'), q5: text('q5'), q6: text('q6'),
     q7: state.skipped.q7 ? null : a.q7,
     q8: text('q8'), q9: text('q9'), q10: text('q10')
