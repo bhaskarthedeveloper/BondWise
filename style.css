@@ -52,6 +52,9 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .card b{display:block;font-size:.85rem;color:var(--muted);margin-bottom:4px;font-weight:600}
 .card button{float:right;padding:4px 10px;font-size:.82rem}
 .rid{font:700 1.8rem var(--serif);letter-spacing:.04em;padding:14px;border:2px dashed var(--accent);border-radius:12px;text-align:center;margin:12px 0;word-break:break-all}
+.reward-badge{display:inline-block;background:var(--accent);color:var(--accent-ink);font-size:.78rem;font-weight:700;letter-spacing:.03em;padding:4px 10px;border-radius:6px;margin-bottom:10px}
+.reward-box{background:var(--me);border:1px solid var(--accent);border-radius:12px;padding:15px 16px;margin:16px 0}
+.reward-box p{margin:0 0 10px;font-size:.95rem}
 .hidden{display:none!important}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:6px}
 @keyframes s{to{transform:rotate(360deg)}}
