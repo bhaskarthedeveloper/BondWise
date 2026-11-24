@@ -84,7 +84,12 @@ const h = (tag, attrs = {}, ...kids) => {
   kids.flat().forEach(k => k != null && e.append(k));
   return e;
 };
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Replace existing EMAIL_RE with stricter regexes:
+const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+// Allows letters, numbers, spaces, and basic college name punctuation: . , & ' - ( ) /
+const SHORT_TEXT_RE = /^[a-zA-Z0-9\s.,&'()/-]+$/;
+// Allows standard English text, numbers, newlines, and normal punctuation (blocks < > { } [ ] \ | ^ ~ ` etc.)
+const LONG_TEXT_RE = /^[a-zA-Z0-9\s.,!?;:'"()&%/@\n\r-]+$/;
 const yearsFor = cat => YEARS[cat] || YEARS.Other;
 
 function show(which) {
@@ -200,15 +205,27 @@ function save(step, v) {
     a.q7 = v;
   } else if (step.type === 'category') {
     if (!v.val) return 'Please select a category.';
-    if (v.val === 'Other' && !v.other) return 'Please specify your college category.';
+    if (v.val === 'Other') {
+      if (!v.other) return 'Please specify your college category.';
+      if (!SHORT_TEXT_RE.test(v.other)) return 'Please use only letters, numbers, and basic punctuation (.,&-/).';
+    }
     a.category = v.val; a.categoryOther = v.val === 'Other' ? v.other : '';
     if (a.year && !yearsFor(a.category).includes(a.year)) { delete a.year; delete state.skipped.year; }
   } else if (step.type === 'choice' || step.type === 'year') {
     if (!v.val) return 'Please select an option.';
     a[id] = v.val;
-  } else {
-    if (!v) return step.req ? 'This field is required.' : 'Please write something, or choose Skip.';
-    if (step.type === 'email' && !EMAIL_RE.test(v)) return 'Please enter a valid email address.';
+  } else if (step.type === 'email') {
+    if (!v) return 'This field is required.';
+    if (!EMAIL_RE.test(v)) return 'Please enter a valid email address.';
+    a[id] = v;
+  } else if (step.type === 'text') {
+    if (!v) return 'This field is required.';
+    if (v.length < 2) return 'Please enter a valid name.';
+    if (!SHORT_TEXT_RE.test(v)) return 'Special characters are not allowed. Use only letters, numbers, and basic punctuation.';
+    a[id] = v;
+  } else if (step.type === 'long') {
+    if (!v) return 'Please write something, or choose Skip.';
+    if (!LONG_TEXT_RE.test(v)) return 'Please avoid special symbols (such as <, >, {, }, [, ], #, $, *, ~). Use standard text and punctuation.';
     a[id] = v;
   }
   delete state.skipped[id];
